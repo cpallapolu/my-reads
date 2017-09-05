@@ -9,7 +9,8 @@ export default class Book extends Component {
     coverURL: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     authors: PropTypes.array.isRequired,
-    shelf: PropTypes.string.isRequired
+    shelf: PropTypes.string.isRequired,
+    changeShelf: PropTypes.func.isRequired
   };
 
   state = {

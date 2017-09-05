@@ -12,13 +12,17 @@ class HomePage extends Component {
     changeShelf: PropTypes.func.isRequired
   };
 
-  handleChangeShelf = (book, shelf) => {
-    this.props.changeShelf(book, shelf);
+  state = {
+    shelves: [
+      {id: 'currentlyReading', displayText: 'Currently Reading'},
+      {id: 'wantToRead', displayText: 'Want To Read'},
+      {id: 'read', displayText: 'Read'}
+    ]
   }
-
 
   render() {
     const { books } = this.props;
+    const { shelves } = this.state;
 
     const groupedBooks = _.groupBy(books, 'shelf');
 
@@ -29,71 +33,26 @@ class HomePage extends Component {
         </div>
 
         <div className="list-books-content">
-          <div className="bookshelf">
-            <h2 className="bookshelf-title">Currently Reading</h2>
-            <ol className="books-grid">
-              {
-                (
-                  groupedBooks.currentlyReading &&
-                  groupedBooks.currentlyReading.map((book, index) => (
+          {
+            shelves.map((shelf) => (
+              <div className="bookshelf" key={shelf.id} >
+                <h2 className="bookshelf-title">{shelf.displayText}</h2>
+                <ol className="books-grid">
+                  {(groupedBooks[shelf.id] && groupedBooks[shelf.id].map((book, index) => (
                     <li key={book.id}>
-                      <Book
-                        key={book.id}
-                        coverURL={book.imageLinks.thumbnail}
-                        title={book.title}
-                        authors={book.authors}
-                        shelf={book.shelf}
-                        changeShelf={this.handleChangeShelf.bind(this, book)}/>
+                        <Book
+                          key={book.id}
+                          coverURL={book.imageLinks.thumbnail}
+                          title={book.title}
+                          authors={book.authors}
+                          shelf={book.shelf}
+                          changeShelf={this.props.changeShelf.bind(this, book)}/>
                     </li>
-                  ))
-                )
-              }
-            </ol>
-          </div>
-
-          <div className="bookshelf">
-            <h2 className="bookshelf-title">Want To Read</h2>
-            <ol className="books-grid">
-              {
-                (
-                  groupedBooks.wantToRead &&
-                  groupedBooks.wantToRead.map((book, index) => (
-                    <li key={book.id}>
-                      <Book
-                        key={book.id}
-                        coverURL={book.imageLinks.thumbnail}
-                        title={book.title}
-                        authors={book.authors}
-                        shelf={book.shelf}
-                        changeShelf={this.handleChangeShelf.bind(this, book)}/>
-                    </li>
-                  ))
-                )
-              }
-            </ol>
-          </div>
-
-          <div className="bookshelf">
-            <h2 className="bookshelf-title">Read</h2>
-            <ol className="books-grid">
-              {
-                (
-                  groupedBooks.read &&
-                  groupedBooks.read.map((book, index) => (
-                    <li key={book.id}>
-                      <Book
-                        key={book.id}
-                        coverURL={book.imageLinks.thumbnail}
-                        title={book.title}
-                        authors={book.authors}
-                        shelf={book.shelf}
-                        changeShelf={this.handleChangeShelf.bind(this, book)}/>
-                    </li>
-                  ))
-                )
-              }
-            </ol>
-          </div>
+                  )))}
+                </ol>
+              </div>
+            ))
+          }
         </div>
 
         <div className="open-search">
