@@ -5,23 +5,6 @@
       "error",
       2
     ],
-    "no-param-reassign": [
-      "error",
-      {
-        "props": true,
-        "ignorePropertyModificationsFor": [
-          "acc",
-          "e",
-          "ctx",
-          "req",
-          "request",
-          "res",
-          "response",
-          "$scope",
-          "server"
-        ]
-      }
-    ],
     "comma-dangle": [
       "error",
       {

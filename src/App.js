@@ -34,7 +34,7 @@ class App extends Component {
     };
 
     const formattedBooks = unformattedBooks.map((unformattedBook) => {
-      const formattedBook = _.defaults(unformattedBook, minBookKeys);
+      const formattedBook = _.defaultsDeep(unformattedBook, minBookKeys);
 
       return formattedBook;
     });
@@ -55,13 +55,9 @@ class App extends Component {
 
           let currBook = _.find(currBooks, { id: updatedBook.id });
 
-          if (!currBook) {
-            currBook = updatedBook;
-
-            currBooks.push(updatedBook);
+          if (currBook) {
+            currBook.shelf = newShelf;
           }
-
-          currBook.shelf = newShelf;
 
           return {
             books: currBooks
@@ -81,6 +77,7 @@ class App extends Component {
       currSearchedBook.shelf = newShelf;
 
       return {
+        books: currState.books.concat([ currSearchedBook ]),
         searchedBooks: currSearchedBooks
       }
     });
