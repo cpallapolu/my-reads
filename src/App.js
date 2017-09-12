@@ -27,7 +27,7 @@ class App extends Component {
     const minBookKeys = {
       title: '',
       imageLinks: {
-        thumbnail: 'https://books.google.ca/googlebooks/images/no_cover_thumb.gif'
+        thumbnail: ''
       },
       authors: [],
       shelf: 'none'
@@ -51,13 +51,13 @@ class App extends Component {
         updatedBook.shelf = newShelf;
 
         this.setState((currState) => {
-          const currBooks = _.clone(currState.books);
+          const currBooks = currState.books.map((book) => {
+            if (book.id === updatedBook.id) {
+              book.shelf = newShelf;
+            }
 
-          let currBook = _.find(currBooks, { id: updatedBook.id });
-
-          if (currBook) {
-            currBook.shelf = newShelf;
-          }
+            return book;
+          });
 
           return {
             books: currBooks
@@ -66,18 +66,20 @@ class App extends Component {
       });
   }
 
-  addBookToShelf = (book, newShelf) => {
-    this.changeShelf(book, newShelf)
-
+  addBookToShelf = (newBook, newShelf) => {
     this.setState((currState) => {
-      const currSearchedBooks = _.clone(currState.searchedBooks);
+      const currSearchedBooks = currState.searchedBooks.map((searchBook) => {
+        if (searchBook.id === newBook.id) {
+          searchBook.shelf = newShelf;
+        }
 
-      const currSearchedBook = _.find(currSearchedBooks, { id: book.id });
+        return searchBook;
+      });
 
-      currSearchedBook.shelf = newShelf;
+      newBook.shelf = newShelf;
 
       return {
-        books: currState.books.concat([ currSearchedBook ]),
+        books: currState.books.concat([ newBook ]),
         searchedBooks: currSearchedBooks
       }
     });
@@ -85,28 +87,29 @@ class App extends Component {
 
   searchForBooks = (query) => {
     BooksAPI.search(query)
+      .catch(() => this.setState({ searchedBooks: [] }))
       .then((searchedBooks) => {
-        if (!searchedBooks && searchedBooks.error) {
-          searchedBooks = [];
-        } else {
-          const currBooks = this.state.books;
+        searchedBooks = (!searchedBooks || !!searchedBooks.error) ? [] : this.formatBooks(searchedBooks);
 
-          currBooks.map((currBook) => {
-            const bookInSearch = _.find(searchedBooks, { id: currBook.id });
+        this.setState((currState) => {
+          const updatedSearchedBooks = searchedBooks.map((searchedBook) => {
+            const bookAlreadySelected = _.find(currState.books, { id: searchedBook.id });
 
-            if (bookInSearch) {
-              bookInSearch.shelf = currBook.shelf;
+            if (bookAlreadySelected) {
+              searchedBook.shelf = bookAlreadySelected.shelf;
             }
-          });
-        }
 
-        this.setState({ searchedBooks: this.formatBooks(searchedBooks) });
-      })
-      .catch(() => this.setState({ searchedBooks: [] }));
+            return searchedBook;
+          });
+
+          return {
+            searchedBooks: updatedSearchedBooks
+          }
+        });
+      });
   }
 
   render() {
-    console.log('this.state: ', this.state);
     return (
       <div className="app">
         <Route exact path='/' render={() => (
@@ -129,4 +132,3 @@ class App extends Component {
 }
 
 export default App;
-// https://books.google.ca/googlebooks/images/no_cover_thumb.gif

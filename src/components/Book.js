@@ -2,9 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-
 export default class Book extends Component {
-
   static propTypes = {
     coverURL: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
@@ -15,11 +13,11 @@ export default class Book extends Component {
 
   state = {
     shelfOptions: [
-      { id: 0, value: 'none', name: 'Move to...'},
+      { id: 0, value: 'moveTo', name: 'Move to...'},
       { id: 1, value: 'currentlyReading', name: 'Currently Reading'},
       { id: 2, value: 'wantToRead', name: 'Want to Read'},
       { id: 3, value: 'read', name: 'Read'},
-      { id: 4, value: 'none', name: 'None'},
+      { id: 4, value: 'none', name: 'None'}
     ]
   }
 
@@ -47,7 +45,7 @@ export default class Book extends Component {
         </div>
 
         <div className="book-title">{this.props.title}</div>
-        <div className="book-authors">{this.props.authors[0]}</div>
+        <div className="book-authors">{this.props.authors.join(', ')}</div>
       </div>
     );
   }
