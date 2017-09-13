@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 
 import Book from './Book';
 
+// home page to display book separated into their shelves.
 class HomePage extends Component {
 
   static propTypes = {
@@ -12,6 +13,7 @@ class HomePage extends Component {
     changeShelf: PropTypes.func.isRequired
   };
 
+  // shelves array. used to loop thru the available shelves.
   state = {
     shelves: [
       {id: 'currentlyReading', displayText: 'Currently Reading'},
@@ -24,6 +26,12 @@ class HomePage extends Component {
     const { books } = this.props;
     const { shelves } = this.state;
 
+    // books are grouped by the shelves
+    // {
+    //    currentlyReading: [{}, {}],
+    //    wantToRead: [{}, {}],
+    //    read: [{}, {}]
+    // }
     const groupedBooks = _.groupBy(books, 'shelf');
 
     return (
@@ -38,6 +46,10 @@ class HomePage extends Component {
               <div className="bookshelf" key={shelf.id} >
                 <h2 className="bookshelf-title">{shelf.displayText}</h2>
                 <ol className="books-grid">
+                  {/*
+                    for any given shelf if the shelf have any books then it will loop thru the books
+                    and will call the Book component with the required values.
+                  */}
                   {(groupedBooks[shelf.id] && groupedBooks[shelf.id].map((book, index) => (
                     <li key={book.id}>
                         <Book

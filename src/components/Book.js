@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+// common class to display the book icon as well as selecting shelf options.
 export default class Book extends Component {
   static propTypes = {
     coverURL: PropTypes.string.isRequired,
@@ -11,6 +12,8 @@ export default class Book extends Component {
     changeShelf: PropTypes.func.isRequired
   };
 
+  // storing all the shelf options here so we can change them quickly
+  // and easily if any more options are required to add.
   state = {
     shelfOptions: [
       { id: 0, value: 'moveTo', name: 'Move to...'},
@@ -21,10 +24,6 @@ export default class Book extends Component {
     ]
   }
 
-  handleChangeShelf = (e) => {
-    this.props.changeShelf(e.target.value);
-  }
-
   render() {
     return (
       <div className="book">
@@ -32,10 +31,17 @@ export default class Book extends Component {
           <div className="book-cover" style={{
             width: 128,
             height: 193,
-            backgroundImage: `url(${this.props.coverURL})` }}></div>
+            backgroundImage: `url(${this.props.coverURL})` }}>
+            <span> No Image Available </span>
+          </div>
 
+          {/*
+            loops thru the shelf options and and builds a dropdown menu.
+            on change of option value, props changeShelf is called whcih will
+            change the shelf of this book
+          */}
           <div className="book-shelf-changer">
-            <select value={ this.props.shelf } onChange={ this.handleChangeShelf }>
+            <select value={ this.props.shelf } onChange={ (e) => this.props.changeShelf(e.target.value) }>
 						  {
                 this.state.shelfOptions.map((shelfOption) =>
                   <option value={ shelfOption.value } key={ shelfOption.id } disabled={shelfOption.id === 0}>{shelfOption.name}</option>)

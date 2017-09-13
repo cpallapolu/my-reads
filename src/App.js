@@ -15,13 +15,23 @@ class App extends Component {
     searchedBooks: []
   }
 
+  // calls the BooksAPI.getAll to get all the books for this user,
+  // on successfull response, updates the books state
+  // on error response, sets the books to empty array
   componentDidMount() {
     BooksAPI.getAll()
+      .catch((err) => {
+        this.setState({ books: [] });
+      })
       .then((books) => {
-        this.setState({ books: this.formatBooks(books) });
+        books = (!books || !!books.error) ? [] : this.formatBooks(books);
+
+        this.setState({ books });
       });
   }
 
+  // makes sure that all the required information to build a Book is present
+  // if any of the value is not present it is defaulted to appropriate value
   formatBooks = (books) => {
     const unformattedBooks = _.clone(books);
     const minBookKeys = {
@@ -42,10 +52,17 @@ class App extends Component {
     return formattedBooks;
   }
 
+  // changes the shelf of any book.
+  // calls the BooksAPI to update the shelf and get the book by its id.
+  // on successfull get book, loops thru the current state books and updates
+  // shelf of the book of interest
   changeShelf = (book, newShelf) => {
     BooksAPI.update(book, newShelf)
       .then((books) => {
         return BooksAPI.get(book.id);
+      })
+      .catch((err) => {
+        // no-op
       })
       .then((updatedBook) => {
         updatedBook.shelf = newShelf;
@@ -66,6 +83,9 @@ class App extends Component {
       });
   }
 
+  // adds a book to given shelf from the search page.
+  // loops thru the searchedBooks state and updates the state of the selected book
+  // and the selected book to the current books state
   addBookToShelf = (newBook, newShelf) => {
     this.setState((currState) => {
       const currSearchedBooks = currState.searchedBooks.map((searchBook) => {
@@ -85,6 +105,10 @@ class App extends Component {
     });
   }
 
+  // searches the books by the query by calling BooksAPI search method.
+  // on successfull response, it formats the books so that every book has
+  // required fields and loop thur the searchedBooks and update the shelf
+  // to match if that book is already selected.
   searchForBooks = (query) => {
     BooksAPI.search(query)
       .catch(() => this.setState({ searchedBooks: [] }))
@@ -112,6 +136,9 @@ class App extends Component {
   render() {
     return (
       <div className="app">
+        {/*
+          home page: displays three shelves with the books assigned to them
+        */}
         <Route exact path='/' render={() => (
           <HomePage
             books={this.state.books}
@@ -119,6 +146,9 @@ class App extends Component {
           />
         )} />
 
+        {/*
+          search page: displays any books mathcing the search query.
+        */}
         <Route path='/search' render={() => (
           <SearchBooks
             books={this.state.searchedBooks}
