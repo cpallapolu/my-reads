@@ -53,23 +53,18 @@ class App extends Component {
   }
 
   // changes the shelf of any book.
-  // calls the BooksAPI to update the shelf and get the book by its id.
-  // on successfull get book, loops thru the current state books and updates
+  // calls the BooksAPI to update the shelf
+  // on successfull update book, loops thru the current state books and updates
   // shelf of the book of interest
   changeShelf = (book, newShelf) => {
     BooksAPI.update(book, newShelf)
-      .then((books) => {
-        return BooksAPI.get(book.id);
-      })
       .catch((err) => {
         // no-op
       })
-      .then((updatedBook) => {
-        updatedBook.shelf = newShelf;
-
+      .then(() => {
         this.setState((currState) => {
-          const currBooks = currState.books.map((book) => {
-            if (book.id === updatedBook.id) {
+          const currBooks = currState.books.map((currBook) => {
+            if (book.id === currBook.id) {
               book.shelf = newShelf;
             }
 
@@ -83,26 +78,32 @@ class App extends Component {
       });
   }
 
-  // adds a book to given shelf from the search page.
-  // loops thru the searchedBooks state and updates the state of the selected book
-  // and the selected book to the current books state
+  // calls BooksAPI update for the book, on successfull call adds a book to given
+  // shelf from the search page. loops thru the searchedBooks state and updates
+  // the state of the selected book and the selected book to the current books state
   addBookToShelf = (newBook, newShelf) => {
-    this.setState((currState) => {
-      const currSearchedBooks = currState.searchedBooks.map((searchBook) => {
-        if (searchBook.id === newBook.id) {
-          searchBook.shelf = newShelf;
-        }
+    BooksAPI.update(newBook, newShelf)
+      .catch((err) => {
+        // no-op
+      })
+      .then((books) => {
+        this.setState((currState) => {
+          const currSearchedBooks = currState.searchedBooks.map((searchBook) => {
+            if (searchBook.id === newBook.id) {
+              searchBook.shelf = newShelf;
+            }
 
-        return searchBook;
+            return searchBook;
+          });
+
+          newBook.shelf = newShelf;
+
+          return {
+            books: currState.books.concat([ newBook ]),
+            searchedBooks: currSearchedBooks
+          }
+        });
       });
-
-      newBook.shelf = newShelf;
-
-      return {
-        books: currState.books.concat([ newBook ]),
-        searchedBooks: currSearchedBooks
-      }
-    });
   }
 
   // searches the books by the query by calling BooksAPI search method.
