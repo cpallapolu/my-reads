@@ -57,25 +57,27 @@ class App extends Component {
   // on successfull update book, loops thru the current state books and updates
   // shelf of the book of interest
   changeShelf = (book, newShelf) => {
-    BooksAPI.update(book, newShelf)
-      .catch((err) => {
-        // no-op
-      })
-      .then(() => {
-        this.setState((currState) => {
-          const currBooks = currState.books.map((currBook) => {
-            if (book.id === currBook.id) {
-              book.shelf = newShelf;
+    if (book.shelf !== newShelf) {
+      BooksAPI.update(book, newShelf)
+        .catch((err) => {
+          // no-op
+        })
+        .then(() => {
+          this.setState((currState) => {
+            const currBooks = currState.books.map((currBook) => {
+              if (book.id === currBook.id) {
+                book.shelf = newShelf;
+              }
+
+              return book;
+            });
+
+            return {
+              books: currBooks
             }
-
-            return book;
           });
-
-          return {
-            books: currBooks
-          }
         });
-      });
+    }
   }
 
   // calls BooksAPI update for the book, on successfull call adds a book to given
