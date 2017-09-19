@@ -5,8 +5,11 @@ import * as _ from 'lodash';
 
 import Book from './Book';
 
-// home page to display book separated into their shelves.
-class HomePage extends Component {
+/**
+ * @namespace HomePage
+ * home page to display book separated into their shelves.
+ */
+export default class HomePage extends Component {
 
   static propTypes = {
     books: PropTypes.array.isRequired,
@@ -74,5 +77,3 @@ class HomePage extends Component {
     );
   }
 }
-
-export default HomePage;

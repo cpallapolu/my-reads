@@ -4,8 +4,11 @@ import { Link } from 'react-router-dom';
 
 import Book from './Book';
 
-// search page to display books for the searched query
-class SearchBooks extends Component {
+/**
+ * @namespace SearchBooks
+ *  search page to display books for the searched query
+ */
+export default class SearchBooks extends Component {
 
   static propTypes = {
     books: PropTypes.array.isRequired,
@@ -18,8 +21,14 @@ class SearchBooks extends Component {
     query: ''
   }
 
-  // updates the query state and calls the searchForBooks prop method to
-  // get the books for the given search query
+  /**
+   * @method updateQuery
+   * @memberof SearchBooks
+   * @desc updates the query state and calls the searchForBooks prop method to
+   * get the books for the given search query
+   * @param   {[type]} newQuery
+   * @returns {}
+   */
   updateQuery = (newQuery) => {
     this.setState({ query: newQuery.trim() })
 
@@ -75,5 +84,3 @@ class SearchBooks extends Component {
   }
 
 }
-
-export default SearchBooks;

@@ -2,7 +2,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-// common class to display the book icon as well as selecting shelf options.
+/**
+ * @namespace Book
+ * common class to display the book icon as well as selecting shelf options.
+ */
 export default class Book extends Component {
   static propTypes = {
     coverURL: PropTypes.string.isRequired,
@@ -32,7 +35,6 @@ export default class Book extends Component {
             width: 128,
             height: 193,
             backgroundImage: `url(${this.props.coverURL})` }}>
-            <span> No Image Available </span>
           </div>
 
           {/*

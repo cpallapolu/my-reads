@@ -9,15 +9,26 @@ import SearchBooks from './components/SearchBooks';
 
 import * as _ from 'lodash';
 
+/**
+ * App Component
+ * @namespace App
+ */
 class App extends Component {
   state = {
     books: [],
     searchedBooks: []
   }
 
+
   // calls the BooksAPI.getAll to get all the books for this user,
   // on successfull response, updates the books state
   // on error response, sets the books to empty array
+  /**
+   * @method componentDidMount
+   * @desc calls the BooksAPI.getAll to get all the books for this user,
+   * on successfull response, updates the books state on error response,
+   * sets the books to empty array
+   */
   componentDidMount() {
     BooksAPI.getAll()
       .catch((err) => {
@@ -30,8 +41,15 @@ class App extends Component {
       });
   }
 
-  // makes sure that all the required information to build a Book is present
-  // if any of the value is not present it is defaulted to appropriate value
+  //
+  /**
+   * @method formatBooks
+   * @memberof App
+   * @desc makes sure that all the required information to build a Book is present
+   * if any of the value is not present it is defaulted to appropriate value
+   * @param   {Books[]} books
+   * @returns {FormattedBooks[]}
+   */
   formatBooks = (books) => {
     const unformattedBooks = _.clone(books);
     const minBookKeys = {
@@ -52,10 +70,16 @@ class App extends Component {
     return formattedBooks;
   }
 
-  // changes the shelf of any book.
-  // calls the BooksAPI to update the shelf
-  // on successfull update book, loops thru the current state books and updates
-  // shelf of the book of interest
+  /**
+   * @method changeShelf
+   * @memberof App
+   * @desc changes the shelf of any book. calls the BooksAPI to update the shelf
+   * on successfull update book, loops thru the current state books and updates
+   * shelf of the book of interest
+   * @param   {FormattedBooks[]} book
+   * @param   {string} newShelf
+   * @returns {[type]}
+   */
   changeShelf = (book, newShelf) => {
     if (book.shelf !== newShelf) {
       BooksAPI.update(book, newShelf)
@@ -69,7 +93,7 @@ class App extends Component {
                 book.shelf = newShelf;
               }
 
-              return book;
+              return currBook;
             });
 
             return {
@@ -80,9 +104,17 @@ class App extends Component {
     }
   }
 
-  // calls BooksAPI update for the book, on successfull call adds a book to given
-  // shelf from the search page. loops thru the searchedBooks state and updates
-  // the state of the selected book and the selected book to the current books state
+  //
+  /**
+   * @method addBookToShelf
+   * @memberof App
+   * @desc calls BooksAPI update for the book, on successfull call adds a book to given
+   * shelf from the search page. loops thru the searchedBooks state and updates
+   * the state of the selected book and the selected book to the current books state
+   * @param   {FormattedBooks[]} newBook
+   * @param   {string} newShelf
+   * @returns {[type]}
+   */
   addBookToShelf = (newBook, newShelf) => {
     BooksAPI.update(newBook, newShelf)
       .catch((err) => {
@@ -108,10 +140,17 @@ class App extends Component {
       });
   }
 
-  // searches the books by the query by calling BooksAPI search method.
-  // on successfull response, it formats the books so that every book has
-  // required fields and loop thur the searchedBooks and update the shelf
-  // to match if that book is already selected.
+  //
+  /**
+   * @method searchedBooks
+   * @memberof App
+   * @desc searches the books by the query by calling BooksAPI search method.
+   * on successfull response, it formats the books so that every book has
+   * required fields and loop thur the searchedBooks and update the shelf
+   * to match if that book is already selected.
+   * @param   {[type]} query
+   * @returns {[type]}
+   */
   searchForBooks = (query) => {
     BooksAPI.search(query)
       .catch(() => this.setState({ searchedBooks: [] }))
