@@ -117,7 +117,10 @@ class App extends Component {
    */
   addBookToShelf = (newBook, newShelf) => {
     BooksAPI.update(newBook, newShelf)
-      .catch((err) => {
+      .then(() => {
+        return BooksAPI.getAll();
+      })
+      .catch(() => {
         // no-op
       })
       .then((books) => {
@@ -130,10 +133,8 @@ class App extends Component {
             return searchBook;
           });
 
-          newBook.shelf = newShelf;
-
           return {
-            books: currState.books.concat([ newBook ]),
+            books: this.formatBooks(books),
             searchedBooks: currSearchedBooks
           }
         });

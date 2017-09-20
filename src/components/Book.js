@@ -28,13 +28,13 @@ export default class Book extends Component {
   }
 
   render() {
+    const { coverURL, shelf, title, authors, changeShelf } = this.props;
+
     return (
       <div className="book">
         <div className="book-top">
-          <div className="book-cover" style={{
-            width: 128,
-            height: 193,
-            backgroundImage: `url(${this.props.coverURL})` }}>
+          <div className="book-cover book-cover-image" style={{
+            backgroundImage: `url(${coverURL})` }}>
           </div>
 
           {/*
@@ -43,7 +43,7 @@ export default class Book extends Component {
             change the shelf of this book
           */}
           <div className="book-shelf-changer">
-            <select value={ this.props.shelf } onChange={ (e) => this.props.changeShelf(e.target.value) }>
+            <select value={ shelf } onChange={ (e) => changeShelf(e.target.value) }>
 						  {
                 this.state.shelfOptions.map((shelfOption) =>
                   <option value={ shelfOption.value } key={ shelfOption.id } disabled={shelfOption.id === 0}>{shelfOption.name}</option>)
@@ -52,8 +52,8 @@ export default class Book extends Component {
           </div>
         </div>
 
-        <div className="book-title">{this.props.title}</div>
-        <div className="book-authors">{this.props.authors.join(', ')}</div>
+        <div className="book-title">{title}</div>
+        <div className="book-authors">{authors.join(', ')}</div>
       </div>
     );
   }
